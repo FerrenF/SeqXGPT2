@@ -1,0 +1,6 @@
+torch
+numpy
+unicodedata
+transformers
+mosec
+openai
