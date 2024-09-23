@@ -39,9 +39,6 @@ class SnifferBaseModel(MsgpackMixin, Worker):
         self.generate_len = 512 # Generation token limit
 
     def forward_calc_ppl(self):
-        """
-            Unimplemented here. Meant to be overridden in derived classes. This method's role is to calculate perplexity.
-        """
         pass
 
     def forward_gen(self):
@@ -71,7 +68,6 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
     def forward(self, data):
         """
-        
         This overrides the forward method from the mosec worker class. It's the first stop for text received on the backend API running our model.
         
         :param data: ['text': str, "do_generate": bool]
@@ -101,6 +97,8 @@ class SnifferModel(SnifferBaseModel):
         self.ppl_calculator_class = ppl_calculator_class
         self.quantization_config = quantization_config
         self.device_map = device_map
+        self.base_tokenizer = None
+        self.base_model = None
         
     def initialize_model(self):
           # Load the tokenizer and model dynamically based on the provided model name
