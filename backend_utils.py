@@ -91,6 +91,7 @@ class tokenizerCommon:
                 2. Simultaneously look up the byte-pair encoding for each byte in the self.byte_encoder didtionary
                 3. Add encoded bytes to the bbs array with bbs.extend()
             """
+            #byte_list = [pplCalcBase.byte_encoder[b] for b in word.encode("utf-8")]
             byte_list = [pplCalcBase.byte_encoder[b] for b in word.encode("utf-8")]
             bbs.extend(byte_list)
             # Also, add the index of the word (idx) to the bbs_to_words array, and do it in the amount of len(byte_list) times to account for the number of bytes.
@@ -257,7 +258,12 @@ class BBPETokenizerPPLCalc(object):
         """
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
         
-        tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
+       # tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
+        tokenized_tokens = [
+            self.base_tokenizer.convert_ids_to_tokens(input_id)
+            for input_id in input_ids
+        ]
+        
         bbs_ll = [] # holds the final list of log-likelihood values, corresponding to each byte of the sub-tokens
         
         
@@ -278,7 +284,7 @@ class BBPETokenizerPPLCalc(object):
         Changes: Replaced _conver_id_to_token with updated method convert_ids_to_tokens 
         """
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
-        begin_token = self.base_tokenizer.convert_ids_to_tokens(input_ids)
+        begin_token = self.base_tokenizer.convert_ids_to_tokens(input_ids[0])
         byte_list = [self.byte_decoder[c] for c in begin_token]
         begin_word_idx = bbs_to_words[len(byte_list) - 1] + 1
         return begin_word_idx
