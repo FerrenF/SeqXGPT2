@@ -19,8 +19,8 @@ from backend_model_info import SeqXGPT2_ModelInfoContainer
 class SeqXFeatureGenerator:
           
     
-    def __init__(self):
-        self.config_models = ConfigManager.get_all_keys()
+   
+    config_models = ConfigManager.get_all_keys()
         
     @classmethod
     def access_api(cls, text, api_url, do_generate=False):
