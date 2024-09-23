@@ -88,7 +88,7 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
 class SnifferModel(SnifferBaseModel):
 
-    def __init__(self, model_name="gpt2", ppl_calculator_class=type(BBPETokenizerPPLCalc),quantization_config=None,device_map=None):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None):
         super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
@@ -113,7 +113,7 @@ class SnifferModel(SnifferBaseModel):
         
         # Initialize perplexity calculator
         byte_encoder = bytes_to_unicode()
-        self.ppl_calculator = self.ppl_calculator_class(byte_encoder, self.base_model, self.base_tokenizer, self.device)     
+        self.ppl_calculator = type(ppl_calculator_class)(byte_encoder, self.base_model, self.base_tokenizer, self.device)     
 
     def forward_calc_ppl(self):
         self.base_tokenizer.padding_side = 'right'
