@@ -37,10 +37,15 @@ class ConfigManager:
         self.config.read(self.config_file)
         return self.config[self.model].get(arg_name, None)
 
-    def config_exists(self):
-        if os.path.exists(self.config_file):
+    def config_model_exists(self):
+        if ConfigManager.config_exists():
             self.config.read(self.config_file)
-            if self.config[self.model]:
+            if self.config.has_section(self.model):
                 return True
-        return False    
-        
+        return False  
+      
+    @staticmethod
+    def config_exists(config_file="config.cfg"):
+        if os.path.exists(config_file):
+            return True
+        return False
