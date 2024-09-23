@@ -6,5 +6,5 @@ openai
 scikit-learn
 scipy
 tqdm
-accelerate @ https://github.com/huggingface/accelerate/tree/main
+accelerate @ https://github.com/huggingface/accelerate
 bitsandbytes
