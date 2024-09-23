@@ -18,9 +18,8 @@ from backend_model_info import SeqXGPT2_ModelInfoContainer
 
 class SeqXFeatureGenerator:
     
-    def __init__(cls) -> None:
-        cls.backend_model_arg_dict = ConfigManager.get_all_dict()
-        cls.config_models = cls.backend_model_arg_dict.keys()
+    def __init__(cls) -> None:        
+        cls.config_models = ConfigManager.get_all_keys()
         
     @classmethod
     def access_api(text, api_url, do_generate=False):
@@ -74,8 +73,9 @@ class SeqXFeatureGenerator:
                 
                 for model in cls.config_models:
                     
-                    api_addr_host = cls.backend_model_arg_dict[model]['host']
-                    api_addr_port = cls.backend_model_arg_dict[model]['port']
+                    opt = ConfigManager.get_model_args(model)
+                    api_addr_host = opt['host']
+                    api_addr_port = opt['port']
                     model_api_addr = f"{api_addr_host}:{api_addr_port}/inference"
             
                     try:
