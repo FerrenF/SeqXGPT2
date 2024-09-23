@@ -75,9 +75,9 @@ class SeqXFeatureGenerator:
                     opt = ConfigManager.get_model_args(model)
                     api_addr_host = opt['host']
                     api_addr_port = opt['port']
-                    model_api_addr = f'http://{api_addr_host}:{api_addr_port}/inference'.encode('unicode_escape')
+                    model_api_addr = rf'http://{api_addr_host}:{api_addr_port}/inference'
                     try:
-                        loss, begin_word_idx, ll_tokens = SeqXFeatureGenerator.access_api(line, model_api_addr)
+                        loss, begin_word_idx, ll_tokens = cls.access_api(line, model_api_addr)
                     except TypeError as e:
                         print(f"return NoneType, probably gpu OOM, discard this sample. api: {model_api_addr} {e}")
                         error_flag = True
