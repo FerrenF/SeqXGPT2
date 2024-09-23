@@ -75,7 +75,7 @@ class SeqXFeatureGenerator:
                     opt = ConfigManager.get_model_args(model)
                     api_addr_host = opt['host']
                     api_addr_port = opt['port']
-                    model_api_addr = f"http://{api_addr_host}:{api_addr_port}/inference"            
+                    model_api_addr = rf"http://{api_addr_host}:{api_addr_port}/inference"            
                     try:
                         loss, begin_word_idx, ll_tokens = SeqXFeatureGenerator.access_api(line, model_api_addr)
                     except TypeError as e:
