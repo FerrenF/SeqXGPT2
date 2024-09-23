@@ -245,7 +245,7 @@ if __name__ == "__main__":
     
     feature_generator = SeqXFeatureGenerator()
     
-    if not feature_generator.config_manager.config_exists():
+    if not ConfigManager().config_exists():
         print("Config file doesn't exist - inference server may not be running. Exiting application...")
         exit(-1)
 
