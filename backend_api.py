@@ -21,7 +21,7 @@ def parse_args():
 if __name__ == "__main__":
     # --model: [damo, gpt2, gptj, gptneo, wenzhong, skywork, llama]
     # python backend_api.py --port 6006 --timeout 30000 --debug --model=damo --gpu=3
-    args = parse_args()  
+    args = parse_args()
     config_manager = ConfigManager(args.model)
     config_manager.write_args(args)
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
