@@ -18,7 +18,9 @@ from backend_model_info import SeqXGPT2_ModelInfoContainer
 
 class SeqXFeatureGenerator:
           
-    config_models = ConfigManager.get_all_keys()
+    
+    def __init__(self):
+        self.config_models = ConfigManager.get_all_keys()
         
     @classmethod
     def access_api(text, api_url, do_generate=False):
@@ -30,10 +32,10 @@ class SeqXFeatureGenerator:
         """
         with httpx.Client(timeout=None) as client:
             post_data = {
-                "text": str(text),
+                "text": text,
                 "do_generate": do_generate,
             }
-            prediction = client.post(api_url,
+            prediction = client.post(url=str(api_url),
                                     data=msgpack.packb(post_data),
                                     timeout=None)
         if prediction.status_code == 200:
