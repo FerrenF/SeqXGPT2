@@ -31,7 +31,6 @@ class SeqXFeatureGenerator:
         :return:
         """
         with httpx.Client(timeout=None) as client:
-            print(text + type(text).__name__)
             post_data = {
                 "text": text,
                 "do_generate": do_generate,
