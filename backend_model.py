@@ -29,15 +29,6 @@ from transformers.models.gpt2.tokenization_gpt2 import bytes_to_unicode
 
 class SnifferBaseModel(MsgpackMixin, Worker):
     
-    """ 
-        This clss is meant to be overridden as a mosec Worker class. 
-        
-        MsgpackMixin specifies that we are going to employ the msgpack serialization format.
-        https://msgpack.org/index.html
-        
-        Worker is a core class in Mosec, which handles the worker's lifecycle.
-    """
-
     def __init__(self):
         super().__init__()
         self.device = "cuda" if torch.cuda.is_available() else "cpu" # Determines whether the model will use a GPU (cuda) or fallback to CPU.
