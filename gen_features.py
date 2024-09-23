@@ -35,7 +35,7 @@ class SeqXFeatureGenerator:
                 "text": text,
                 "do_generate": do_generate,
             }
-            prediction = client.post(url=str(api_url),
+            prediction = client.post(url=api_url,
                                     data=msgpack.packb(post_data),
                                     timeout=None)
         if prediction.status_code == 200:
