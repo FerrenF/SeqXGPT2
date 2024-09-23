@@ -120,14 +120,14 @@ class SnifferModel(SnifferBaseModel):
         return self.ppl_calculator.forward_calc_ppl(self.text)
 
 quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
-class GPT2SnifferModel(SnifferBaseModel):
+class GPT2SnifferModel(SnifferModel):
     def __init__(self):
         super().__init__(model_name="gpt2")  
                 
-class GPTNeoSnifferModel(SnifferBaseModel):
+class GPTNeoSnifferModel(SnifferModel):
     def __init__(self):
         super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit,device_map="auto")  
         
-class GPTJSnifferModel(SnifferBaseModel):
+class GPTJSnifferModel(SnifferModel):
     def __init__(self):
         super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit,device_map="auto")  
