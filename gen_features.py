@@ -78,8 +78,8 @@ class SeqXFeatureGenerator:
                     model_api_addr = f"http://{api_addr_host}:{api_addr_port}/inference"            
                     try:
                         loss, begin_word_idx, ll_tokens = cls.access_api(line, model_api_addr)
-                    except TypeError:
-                        print(f"return NoneType, probably gpu OOM, discard this sample. api: {model_api_addr}")
+                    except TypeError as e:
+                        print(f"return NoneType, probably gpu OOM, discard this sample. api: {model_api_addr} {e}")
                         error_flag = True
                         break
                     losses.append(loss)
