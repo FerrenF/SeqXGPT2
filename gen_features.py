@@ -73,8 +73,8 @@ class SeqXFeatureGenerator:
                 for model in cls.config_models:
                     
                     opt = ConfigManager.get_model_args(model)
-                    api_addr_host = opt['host']
-                    api_addr_port = opt['port']
+                    api_addr_host = opt.host
+                    api_addr_port = opt.port
                     model_api_addr = f"{api_addr_host}:{api_addr_port}/inference"
             
                     try:
