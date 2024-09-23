@@ -23,7 +23,7 @@ class SeqXFeatureGenerator:
         self.config_models = ConfigManager.get_all_keys()
         
     @classmethod
-    def access_api(text, api_url, do_generate=False):
+    def access_api(cls, text, api_url, do_generate=False):
         """
         :param text: input text
         :param api_url: api
@@ -104,7 +104,7 @@ class SeqXFeatureGenerator:
                 f.write(json.dumps(result, ensure_ascii=False) + '\n')
 
     @classmethod
-    def process_features(input_file, output_file, do_normalize=False):
+    def process_features(cls, input_file, output_file, do_normalize=False):
         """
         Process features from raw features.
 
