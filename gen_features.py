@@ -18,7 +18,7 @@ from backend_model_info import SeqXGPT2_ModelInfoContainer
 
 class SeqXFeatureGenerator:
     
-    def __init__(cls, model_name) -> None:
+    def __init__(cls) -> None:
         cls.backend_model_arg_dict = ConfigManager.get_all_dict()
         cls.config_models = cls.backend_model_arg_dict.keys()
         
