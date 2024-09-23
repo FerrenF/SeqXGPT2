@@ -75,12 +75,11 @@ class SeqXFeatureGenerator:
                     opt = ConfigManager.get_model_args(model)
                     api_addr_host = opt['host']
                     api_addr_port = opt['port']
-                    model_api_addr = f"{api_addr_host}:{api_addr_port}/inference"
-            
+                    model_api_addr = f"{api_addr_host}:{api_addr_port}/inference"            
                     try:
                         loss, begin_word_idx, ll_tokens = cls.access_api(line, model_api_addr)
                     except TypeError:
-                        print("return NoneType, probably gpu OOM, discard this sample")
+                        print(f"return NoneType, probably gpu OOM, discard this sample. api: {model_api_addr}")
                         error_flag = True
                         break
                     losses.append(loss)
