@@ -4,3 +4,5 @@ unicodedata
 transformers
 mosec
 openai
+scikit-learn
+scipy

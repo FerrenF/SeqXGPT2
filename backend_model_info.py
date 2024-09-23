@@ -41,3 +41,6 @@ class SeqXGPT2_ModelInfoContainer:
         ("gptneo", SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', load_in_8bit=True, device_map="auto")),
         ("gptj", SnifferModel(model_name='EleutherAI/gpt-j-6B', load_in_8bit=True, device_map="auto"))
     ])
+    
+    learning_feature_directory = "learning/features/"
+    learning_raw_directory = "learning/raw/"
