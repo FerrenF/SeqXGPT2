@@ -27,6 +27,7 @@ if __name__ == "__main__":
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     sniffer_model = modelInfo.MODEL_MAP[args.model]
+    sniffer_model.initialize_model()
     server = Server()
     server.append_worker(sniffer_model)
     server.run()

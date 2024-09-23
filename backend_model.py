@@ -106,11 +106,16 @@ class SnifferModel(SnifferBaseModel):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
         self.text = None
+        self.model_name = model_name
+        self.ppl_calculator_class = ppl_calculator_class
+        self.quantization_config = quantization_config
+        self.device_map = device_map
         
-        # Load the tokenizer and model dynamically based on the provided model name
-        self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
+    def initialize_model(self):
+          # Load the tokenizer and model dynamically based on the provided model name
+        self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
         self.base_model = transformers.AutoModelForCausalLM.from_pretrained(
-            model_name, device_map=device_map, quantization_config=quantization_config
+            self.model_name, device_map=self.device_map, quantization_config=self.quantization_config
         )
         
         # Set padding token ID
@@ -122,7 +127,7 @@ class SnifferModel(SnifferBaseModel):
         
         # Initialize perplexity calculator
         byte_encoder = bytes_to_unicode()
-        self.ppl_calculator = ppl_calculator_class(byte_encoder, self.base_model, self.base_tokenizer, self.device)
+        self.ppl_calculator = self.ppl_calculator_class(byte_encoder, self.base_model, self.base_tokenizer, self.device)
 
     def forward_calc_ppl(self):
         self.base_tokenizer.padding_side = 'right'
