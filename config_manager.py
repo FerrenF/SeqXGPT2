@@ -11,6 +11,12 @@ class ConfigManager:
         self.config_file = config_file
         self.config = configparser.ConfigParser()
 
+    @staticmethod
+    def get_all_dict(config_file="config.cfg"):
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        return config.read_dict()
+    
     def write_args(self, args):
         self.config[str(self.model)] = {key: str(val) for key, val in vars(args).items()}
         with open(self.config_file, 'w') as configfile:
