@@ -259,7 +259,6 @@ class BBPETokenizerPPLCalc(object):
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
         
         tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
-        print(tokenized_tokens)
        # tokenized_tokens = [
        #     self.base_tokenizer.convert_ids_to_tokens([input_id])[0]
        #     for input_id in input_ids
@@ -285,7 +284,7 @@ class BBPETokenizerPPLCalc(object):
         Changes: Replaced _conver_id_to_token with updated method convert_ids_to_tokens 
         """
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
-        begin_token = self.base_tokenizer.convert_ids_to_tokens(input_ids[0])[0]
+        begin_token = self.base_tokenizer.convert_ids_to_tokens([input_ids[0]])[0]
         byte_list = [self.byte_decoder[c] for c in begin_token]
         begin_word_idx = bbs_to_words[len(byte_list) - 1] + 1
         return begin_word_idx
