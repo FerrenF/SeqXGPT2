@@ -12,7 +12,7 @@ class ConfigManager:
         self.config = configparser.ConfigParser()
 
     def write_args(self, args):
-        self.config[str(self.model)] = vars(args)
+        self.config[str(self.model)] = {key: str(val) for key, val in vars(args).items()}
         with open(self.config_file, 'w') as configfile:
             self.config.write(configfile)
 
