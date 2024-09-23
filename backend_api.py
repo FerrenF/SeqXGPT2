@@ -33,7 +33,7 @@ if __name__ == "__main__":
         for k, v in selectParams.items:
             super.__setattr__(self,k,v)
                     
-    sniffer_model = type("SnifferDynamicModel", (SnifferModel),  { "__init__": dynamicInit })
+    sniffer_model = type("SnifferDynamicModel", tuple(SnifferModel),  { "__init__": dynamicInit })
     server = Server()
     server.append_worker(sniffer_model)
     server.run()
