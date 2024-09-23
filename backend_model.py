@@ -14,7 +14,7 @@ from typing import List
 from mosec import Worker
 from mosec.mixin import MsgpackMixin
 
-
+from transformers import BitsAndBytesConfig
 
 # llama
 from transformers import LlamaForCausalLM, LlamaTokenizer
@@ -88,10 +88,8 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
 class SnifferModel(SnifferBaseModel):
 
-    def __init__(self):
-        super().__init__()        
-        
-    def initialize_model(self, model_name, ppl_calculator_class=BBPETokenizerPPLCalc, quantization_config=None, device_map=None):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None):
+        super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
         self.text = None
@@ -99,8 +97,7 @@ class SnifferModel(SnifferBaseModel):
         self.ppl_calculator_class = ppl_calculator_class
         self.quantization_config = quantization_config
         self.device_map = device_map
-        self.base_tokenizer = None
-        self.base_model = None
+
           # Load the tokenizer and model dynamically based on the provided model name
         self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
         self.base_model = transformers.AutoModelForCausalLM.from_pretrained(
@@ -116,8 +113,21 @@ class SnifferModel(SnifferBaseModel):
         
         # Initialize perplexity calculator
         byte_encoder = bytes_to_unicode()
-        self.ppl_calculator = self.ppl_calculator_class(byte_encoder, self.base_model, self.base_tokenizer, self.device)
+        self.ppl_calculator = self.ppl_calculator_class(byte_encoder, self.base_model, self.base_tokenizer, self.device)     
 
     def forward_calc_ppl(self):
         self.base_tokenizer.padding_side = 'right'
         return self.ppl_calculator.forward_calc_ppl(self.text)
+
+quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
+class GPT2SnifferModel(SnifferBaseModel):
+    def __init__(self):
+        super().__init__(model_name="gpt2")  
+                
+class GPTNeoSnifferModel(SnifferBaseModel):
+    def __init__(self):
+        super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit,device_map="auto")  
+        
+class GPTJSnifferModel(SnifferBaseModel):
+    def __init__(self):
+        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit,device_map="auto")  

@@ -12,8 +12,8 @@
     load_in_8bit, used in the generalized models below, will be deprecated as an argument in the future. they should be passed as a BitsAndBytesConfig object.
 """
 from collections import OrderedDict
-from transformers import BitsAndBytesConfig
 
+from backend_model import GPT2SnifferModel, GPTNeoSnifferModel, GPTJSnifferModel
 
 class SeqXGPT2_ModelInfoContainer:
     # All models that Sniffer will use.
@@ -38,11 +38,11 @@ class SeqXGPT2_ModelInfoContainer:
 
     base_model = "roberta-base"
 
-    quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
+ 
     MODEL_MAP = OrderedDict([        
-        ("gpt2", dict(model_name='gpt2-xl')),
-        ("gptneo", dict(model_name='EleutherAI/gpt-neo-2.7B', quantization_config=quant_config_8bit, device_map="auto")),
-        ("gptj", dict(model_name='EleutherAI/gpt-j-6B', quantization_config=quant_config_8bit, device_map="auto"))
+        ("gpt2", GPT2SnifferModel),
+        ("gptneo", GPTNeoSnifferModel),
+        ("gptj", GPTJSnifferModel)
         ])
     
     learning_feature_directory = "learning/features/"
