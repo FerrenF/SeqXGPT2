@@ -1,8 +1,9 @@
 torch
 numpy
-unicodedata
 transformers
 mosec
 openai
 scikit-learn
 scipy
+json
+tqdm
