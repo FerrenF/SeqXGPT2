@@ -101,7 +101,7 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
 class SnifferModel(SnifferBaseModel):
 
-    def __init__(self, model_name, ppl_calculator_class=BBPETokenizerPPLCalc, load_in_8bit=False, device_map=None):
+    def __init__(self, model_name, ppl_calculator_class=BBPETokenizerPPLCalc, quantization_config=None, device_map=None):
         super().__init__()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
@@ -110,7 +110,7 @@ class SnifferModel(SnifferBaseModel):
         # Load the tokenizer and model dynamically based on the provided model name
         self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
         self.base_model = transformers.AutoModelForCausalLM.from_pretrained(
-            model_name, device_map=device_map, load_in_8bit=load_in_8bit
+            model_name, device_map=device_map, quantization_config=quantization_config
         )
         
         # Set padding token ID

@@ -6,9 +6,13 @@
     
     Moved model class definition dictionary here.
     Put all variables into a container class.
+    
+    TODO:
+    
+    load_in_8bit, used in the generalized models below, will be deprecated as an argument in the future. they should be passed as a BitsAndBytesConfig object.
 """
 from collections import OrderedDict
-
+from transformers import BitsAndBytesConfig
 
 
 class SeqXGPT2_ModelInfoContainer:
@@ -36,10 +40,11 @@ class SeqXGPT2_ModelInfoContainer:
 
     from backend_model import (SnifferModel)
 
+    quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
     MODEL_MAP = OrderedDict([
         ("gpt2", SnifferModel(model_name='gpt2-xl')),
-        ("gptneo", SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', load_in_8bit=True, device_map="auto")),
-        ("gptj", SnifferModel(model_name='EleutherAI/gpt-j-6B', load_in_8bit=True, device_map="auto"))
+        ("gptneo", SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', quantization_config=quant_config_8bit, device_map="auto")),
+        ("gptj", SnifferModel(model_name='EleutherAI/gpt-j-6B', quantization_config=quant_config_8bit, device_map="auto"))
     ])
     
     learning_feature_directory = "learning/features/"

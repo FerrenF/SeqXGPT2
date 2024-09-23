@@ -6,3 +6,5 @@ openai
 scikit-learn
 scipy
 tqdm
+accelerate
+bitsandbytes
