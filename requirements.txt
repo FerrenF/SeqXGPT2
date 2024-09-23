@@ -5,5 +5,4 @@ mosec
 openai
 scikit-learn
 scipy
-json
 tqdm
