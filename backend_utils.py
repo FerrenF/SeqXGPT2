@@ -258,11 +258,12 @@ class BBPETokenizerPPLCalc(object):
         """
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
         
-       # tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
-        tokenized_tokens = [
-            self.base_tokenizer.convert_ids_to_tokens([input_id])[0]
-            for input_id in input_ids
-        ]
+        tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
+        print(tokenized_tokens)
+       # tokenized_tokens = [
+       #     self.base_tokenizer.convert_ids_to_tokens([input_id])[0]
+       #     for input_id in input_ids
+       # ]
         
         bbs_ll = [] # holds the final list of log-likelihood values, corresponding to each byte of the sub-tokens
         
