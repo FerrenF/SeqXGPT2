@@ -27,8 +27,13 @@ if __name__ == "__main__":
     config_manager.write_args(args)
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    sniffer_model = SnifferModel()
-    sniffer_model.initialize_model(**modelInfo.MODEL_MAP[args.model])
+    
+    selectParams = modelInfo.MODEL_MAP[args.model]
+    def dynamicInit(self):
+        for k, v in selectParams.items:
+            super.__setattr__(self,k,v)
+                    
+    sniffer_model = type("SnifferDynamicModel", SnifferModel,  { "__init__": dynamicInit })
     server = Server()
     server.append_worker(sniffer_model)
     server.run()
