@@ -4,6 +4,7 @@ import argparse
 from mosec import Server
 
 from backend_model_info import SeqXGPT2_ModelInfoContainer as modelInfo
+from backend_model import SnifferModel
 from config_manager import ConfigManager
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -26,8 +27,8 @@ if __name__ == "__main__":
     config_manager.write_args(args)
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    sniffer_model = modelInfo.MODEL_MAP[args.model]
-    sniffer_model.initialize_model()
+    sniffer_model = SnifferModel()
+    sniffer_model.initialize_model(**modelInfo.MODEL_MAP[args.model])
     server = Server()
     server.append_worker(sniffer_model)
     server.run()

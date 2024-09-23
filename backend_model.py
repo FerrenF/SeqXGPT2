@@ -88,8 +88,10 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
 class SnifferModel(SnifferBaseModel):
 
-    def __init__(self, model_name, ppl_calculator_class=BBPETokenizerPPLCalc, quantization_config=None, device_map=None):
-        super().__init__()
+    def __init__(self):
+        super().__init__()        
+        
+    def initialize_model(self, model_name, ppl_calculator_class=BBPETokenizerPPLCalc, quantization_config=None, device_map=None):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
         self.text = None
@@ -99,8 +101,6 @@ class SnifferModel(SnifferBaseModel):
         self.device_map = device_map
         self.base_tokenizer = None
         self.base_model = None
-        
-    def initialize_model(self):
           # Load the tokenizer and model dynamically based on the provided model name
         self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
         self.base_model = transformers.AutoModelForCausalLM.from_pretrained(

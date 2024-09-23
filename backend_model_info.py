@@ -38,14 +38,12 @@ class SeqXGPT2_ModelInfoContainer:
 
     base_model = "roberta-base"
 
-    from backend_model import (SnifferModel)
-
     quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
-    MODEL_MAP = OrderedDict([
-        ("gpt2", SnifferModel(model_name='gpt2-xl')),
-        ("gptneo", SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', quantization_config=quant_config_8bit, device_map="auto")),
-        ("gptj", SnifferModel(model_name='EleutherAI/gpt-j-6B', quantization_config=quant_config_8bit, device_map="auto"))
-    ])
+    MODEL_MAP = OrderedDict([        
+        ("gpt2", dict(model_name='gpt2-xl')),
+        ("gptneo", dict(model_name='EleutherAI/gpt-neo-2.7B', quantization_config=quant_config_8bit, device_map="auto")),
+        ("gptj", dict(model_name='EleutherAI/gpt-j-6B', quantization_config=quant_config_8bit, device_map="auto"))
+        ])
     
     learning_feature_directory = "learning/features/"
     learning_raw_directory = "learning/raw/"
