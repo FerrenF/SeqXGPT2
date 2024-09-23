@@ -21,7 +21,7 @@ class ConfigManager:
     def get_model_args(model, config_file="config.cfg"):
         config = configparser.ConfigParser()
         config.read(config_file)
-        return config[model].__dict__()
+        return config[model].items()
     
     def write_args(self, args):
         self.config[str(self.model)] = {key: str(val) for key, val in vars(args).items()}
