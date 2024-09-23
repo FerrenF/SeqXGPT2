@@ -30,7 +30,7 @@ class SeqXFeatureGenerator:
         """
         with httpx.Client(timeout=None) as client:
             post_data = {
-                "text": text,
+                "text": str(text),
                 "do_generate": do_generate,
             }
             prediction = client.post(api_url,
@@ -77,7 +77,7 @@ class SeqXFeatureGenerator:
                     api_addr_port = opt['port']
                     model_api_addr = f"http://{api_addr_host}:{api_addr_port}/inference"            
                     try:
-                        loss, begin_word_idx, ll_tokens = cls.access_api(line, model_api_addr)
+                        loss, begin_word_idx, ll_tokens = SeqXFeatureGenerator.access_api(line, model_api_addr)
                     except TypeError as e:
                         print(f"return NoneType, probably gpu OOM, discard this sample. api: {model_api_addr} {e}")
                         error_flag = True
