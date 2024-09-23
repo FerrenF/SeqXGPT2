@@ -88,7 +88,7 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 
 class SnifferModel(SnifferBaseModel):
 
-    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc(),quantization_config=None,device_map=None):
         super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
