@@ -115,7 +115,10 @@ class SnifferModel(SnifferBaseModel):
         
         # Set padding token ID
         self.base_tokenizer.pad_token_id = self.base_tokenizer.eos_token_id
-        self.base_model.to(self.device)
+        
+        is_quantized = getattr(self.base_model, "is_quantized", False) or getattr(self.base_model, "is_loaded_in_8bit", False)
+        if not is_quantized:
+            self.base_model.to(self.device)
         
         # Initialize perplexity calculator
         byte_encoder = bytes_to_unicode()
