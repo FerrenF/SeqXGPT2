@@ -8,3 +8,5 @@ scipy
 tqdm
 accelerate @ git+https://github.com/huggingface/accelerate@main
 bitsandbytes
+datasets
+nltk

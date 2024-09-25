@@ -86,7 +86,7 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 # gpt_neo_model = SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', load_in_8bit=True, device_map="auto")
 # gpt_j_model = SnifferModel(model_name='EleutherAI/gpt-j-6B', load_in_8bit=True, device_map="auto")
 
-class SnifferModel(SnifferBaseModel):
+class SnifferGPTFamilyModel(SnifferBaseModel):
 
     def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None):
         super().__init__()  
@@ -120,14 +120,14 @@ class SnifferModel(SnifferBaseModel):
         return self.ppl_calculator.forward_calc_ppl(self.text)
 
 quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
-class GPT2SnifferModel(SnifferModel):
+class GPT2SnifferModel(SnifferGPTFamilyModel):
     def __init__(self):
         super().__init__(model_name="gpt2")  
                 
-class GPTNeoSnifferModel(SnifferModel):
+class GPTNeoSnifferModel(SnifferGPTFamilyModel):
     def __init__(self):
         super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit,device_map="auto")  
         
-class GPTJSnifferModel(SnifferModel):
+class GPTJSnifferModel(SnifferGPTFamilyModel):
     def __init__(self):
         super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit,device_map="auto")  
