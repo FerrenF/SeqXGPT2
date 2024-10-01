@@ -4,7 +4,7 @@ import argparse
 from mosec import Server
 
 from backend_model_info import SeqXGPT2_ModelInfoContainer as modelInfo
-from backend_model import SnifferGPTFamilyModel
+from backend_model import SnifferGeneralFamilyModel
 from config_manager import ConfigManager
 def parse_args():
     parser = argparse.ArgumentParser()

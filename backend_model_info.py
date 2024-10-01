@@ -29,8 +29,8 @@
     'GPT-4' - CLOSED SOURCE
     'GPT-J' - DONE ******
     'GPT-NeoX' - GPT-NEO Family, BETTER FOR CODING https://huggingface.co/docs/transformers/model_doc/gpt_neox
-    'Gemini-Pro'
-    'Goliath-120B' 
+    'Gemini-Pro' 
+    'Goliath-120B'  
     'Human' 
     'LLaMA-13B' - https://huggingface.co/yahma/llama-13b-hf 
     'LLaMA-2-70B' 
@@ -44,43 +44,43 @@
     'Mixtral-8x7B' - USE QUANTIZED https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GPTQ
     'MythoMax-L2-13B' 
     'Neural-Chat-7B' 
-    'Noromaid-20B'
+    'Noromaid-20B' 
     'Nous-Capybara-34B' 
     'Nous-Capybara-7B' 
-    'Nous-Hermes-LLaMA-2-13B'
+    'Nous-Hermes-LLaMA-2-13B' 
     'Nous-Hermes-LLaMA-2-70B' 
-    'OPT-1.3B' - GPT3 FAMILY DECODERS https://huggingface.co/facebook/opt-1.3b
+    'OPT-1.3B' - GPT3 FAMILY DECODERS https://huggingface.co/facebook/opt-1.3b 
     'OPT-125M' 
-    'OPT-13B' - https://huggingface.co/facebook/opt-13b
-    'OPT-2.7B'
+    'OPT-13B' - https://huggingface.co/facebook/opt-13b 
+    'OPT-2.7B' 
     'OPT-30B' 
     'OPT-350M' 
     'OPT-6.7B' 
     'OpenChat-3.5' 
-    'OpenHermes-2-Mistral-7B'
+    'OpenHermes-2-Mistral-7B' 
     'OpenHermes-2.5-Mistral-7B' 
     'PaLM-2' 
-    'Psyfighter-13B' https://huggingface.co/TheBloke/Psyfighter-13B-GGUF QUANTIZED
-    'Psyfighter-2-13B'
+    'Psyfighter-13B' https://huggingface.co/TheBloke/Psyfighter-13B-GGUF QUANTIZED 
+    'Psyfighter-2-13B' 
     'RWKV-5-World-3B' 
-    'StripedHyena-Nous-7B' - https://huggingface.co/togethercomputer/StripedHyena-Nous-7B
+    'StripedHyena-Nous-7B' - https://huggingface.co/togethercomputer/StripedHyena-Nous-7B 
     'T0-11B' 
     'T0-3B' 
-    'Text-Ada-001'
+    'Text-Ada-001' 
     'Text-Babbage-001' 
     'Text-Curie-001' 
     'Text-Davinci-001' 
-    'Text-Davinci-002'
+    'Text-Davinci-002' 
     'Text-Davinci-003' 
     'Toppy-M-7B' 
     'Unknown' 
-    'YI-34B' - UNFEASIBLE | ALTERNATIVE https://huggingface.co/01-ai/Yi-6B
+    'YI-34B' - UNFEASIBLE | ALTERNATIVE https://huggingface.co/01-ai/Yi-6B 
     ]
  
 """
 from collections import OrderedDict
 
-from backend_model import GPT2SnifferModel, GPTNeoSnifferModel, GPTJSnifferModel
+from backend_model import GPT2SnifferModel, GPTNeoSnifferModel, GPTJSnifferModel, LlamaSnifferModel
 
 class SeqXGPT2_ModelInfoContainer:
     # All models that Sniffer will use.
@@ -111,7 +111,8 @@ class SeqXGPT2_ModelInfoContainer:
     MODEL_MAP = OrderedDict([        
         ("gpt2", GPT2SnifferModel),
         ("gptneo", GPTNeoSnifferModel),
-        ("gptj", GPTJSnifferModel)
+        ("gptj", GPTJSnifferModel),
+        ("Llama", LlamaSnifferModel)
         ])
     
     learning_feature_directory = "learning/features/"

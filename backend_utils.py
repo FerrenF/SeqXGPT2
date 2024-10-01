@@ -259,13 +259,8 @@ class BBPETokenizerPPLCalc(object):
         input_ids = input_ids.squeeze() # Remove dimensions of size 1 from the tensor.
         
         tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
-       # tokenized_tokens = [
-       #     self.base_tokenizer.convert_ids_to_tokens([input_id])[0]
-       #     for input_id in input_ids
-       # ]
-        
+                
         bbs_ll = [] # holds the final list of log-likelihood values, corresponding to each byte of the sub-tokens
-        
         
         # The first token in GPT-2 is often special because GPT-2 doesn’t include a start-of-sequence token (<s>). 
         # This means the log-likelihood for the first token is not calculated.
@@ -449,9 +444,10 @@ class CharLevelTokenizerPPLCalc(object):
 
 
 class SPLlamaTokenizerPPLCalc(object):
-    """ base_tokenizer is based on the `SentencePiece Algorithm` for Llama models """
+    """ base_tokenizer is based on the `SentencePiece Algorithm` for Llama models 
+        the same encoding type is used for Llama2 models too """
 
-    def __init__(self, base_model, base_tokenizer, device):
+    def __init__(self,byte_encoder,base_model, base_tokenizer, device): # byte encoder is there for abstraction purposes (laziness)
         # Llama tokenizer has byte level tokens for words which is not in the `tokenizer vocab`
         self.byte_encoder = {i: f'<0x{i:02X}>' for i in range(256)}
         self.byte_decoder = {v: k for k, v in self.byte_encoder.items()}
@@ -472,13 +468,12 @@ class SPLlamaTokenizerPPLCalc(object):
         """
         Changes: changed old method to convert_ids_to_tokens
         
-        :return bbs_ll: list of bbpe_byte's ll.
+        :return bbs_ll:  :return bbs_ll: a list where each byte of the byte-pair encoded tokens has a corresponding log-likelihood value.
         """
         input_ids = input_ids.squeeze()
-        # because `sentencepiece tokenizer` add `<s>▁` before all sentence.
-        # this step we remove `<s>`, because it is treated as a separate token.
         input_ids = input_ids[1:]
         tokenized_tokens = self.base_tokenizer.convert_ids_to_tokens(input_ids)
+        
         bbs_ll = []
         for idx, token in enumerate(tokenized_tokens):
             if self.base_tokenizer.sp_model.IsByte(input_ids[idx].item()):
@@ -494,10 +489,8 @@ class SPLlamaTokenizerPPLCalc(object):
         return bbs_ll
 
     def forward_calc_ppl(self, text):
-        tokenized = self.base_tokenizer(text,
-                                        max_length=1024,
-                                        truncation=True,
-                                        return_tensors="pt").to(self.device)
+        
+        tokenized = self.base_tokenizer(text, max_length=1024, truncation=True, return_tensors="pt").to(self.device)
         input_ids = tokenized.input_ids
         labels = tokenized.input_ids
         input_ids = input_ids[:, :1024, ]

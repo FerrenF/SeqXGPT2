@@ -86,9 +86,31 @@ class SnifferBaseModel(MsgpackMixin, Worker):
 # gpt_neo_model = SnifferModel(model_name='EleutherAI/gpt-neo-2.7B', load_in_8bit=True, device_map="auto")
 # gpt_j_model = SnifferModel(model_name='EleutherAI/gpt-j-6B', load_in_8bit=True, device_map="auto")
 
-class SnifferGPTFamilyModel(SnifferBaseModel):
 
-    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None):
+# In the original code, some tokenizers had their special token values mapped to another value - for various reasons. Like llama, having it's pad_token_id being mapped to the eos_token_id.
+class specialTokenMap:
+    def __init__(self, tokenizer):
+        self.tokenMap = {}
+        self.tokenizer = None
+    def loadNewMap(self):
+         for key, value in self.tokenMap.items():
+            if hasattr(self.tokenizer, value):
+                # Get the attribute value of the tokenizer
+                token_value = getattr(self.tokenizer, value)
+            else:
+                # If the attribute doesn't exist, set token_value to the string value itself
+                token_value = value
+            # Now, set the tokenizer attribute identified by 'key'
+            setattr(self.tokenizer, key, token_value)      
+
+class specialLlamaTokenMap(specialTokenMap):
+    def __init__(self, tokenizer) -> None:
+        super().__init__()
+        self.tokenizer = tokenizer
+        self.tokenMap["pad_token_id"] = "eos_token_id"
+        
+class SnifferGeneralFamilyModel(SnifferBaseModel):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None,loadSpecialTokenMap=None):
         super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
@@ -100,6 +122,11 @@ class SnifferGPTFamilyModel(SnifferBaseModel):
 
           # Load the tokenizer and model dynamically based on the provided model name
         self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
+        
+        if loadSpecialTokenMap is not None:
+            mapper = loadSpecialTokenMap(self.base_tokenizer)
+            mapper.loadNewMap()
+            
         self.base_model = transformers.AutoModelForCausalLM.from_pretrained(
             self.model_name, device_map=self.device_map, quantization_config=self.quantization_config
         )
@@ -120,14 +147,19 @@ class SnifferGPTFamilyModel(SnifferBaseModel):
         return self.ppl_calculator.forward_calc_ppl(self.text)
 
 quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
-class GPT2SnifferModel(SnifferGPTFamilyModel):
+class GPT2SnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
         super().__init__(model_name="gpt2")  
                 
-class GPTNeoSnifferModel(SnifferGPTFamilyModel):
+class GPTNeoSnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
-        super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit,device_map="auto")  
+        super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit, device_map="auto")  
         
-class GPTJSnifferModel(SnifferGPTFamilyModel):
+class GPTJSnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
-        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit,device_map="auto")  
+        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit, device_map="auto")  
+        
+class LlamaSnifferModel(SnifferGeneralFamilyModel):
+    def __init__(self):
+        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, device_map="auto", loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc)  
+        
