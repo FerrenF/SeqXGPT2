@@ -100,7 +100,7 @@ class SeqXGPT2_ModelInfoContainer:
         'gpt2': 0,
         'gptneo': 1,
         'gptj': 2,
-        'llama2': 3,
+        'llama': 3,
         'human' : 5
     }
     en_class_num = 5
@@ -112,7 +112,7 @@ class SeqXGPT2_ModelInfoContainer:
         ("gpt2", GPT2SnifferModel),
         ("gptneo", GPTNeoSnifferModel),
         ("gptj", GPTJSnifferModel),
-        ("Llama", LlamaSnifferModel)
+        ("llama", LlamaSnifferModel)
         ])
     
     learning_feature_directory = "learning/features/"

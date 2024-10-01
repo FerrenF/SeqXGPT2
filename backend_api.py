@@ -9,7 +9,7 @@ from config_manager import ConfigManager
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--model", type=str, required=True, default="gpt2", help= "The model to use. Supported models: [gpt2, gptneo, gptj].",
+        "--model", type=str, required=True, default="gpt2", help= "The model to use. Supported models: [gpt2, gptneo, gptj, llama].",
     )
     parser.add_argument("--gpu", type=str, required=False, default='0', help="Set os.environ['CUDA_VISIBLE_DEVICES'].")
     parser.add_argument("--port", help="Sets the port used by the mosec server.")
