@@ -109,7 +109,7 @@ class specialLlamaTokenMap(specialTokenMap):
         self.tokenMap["pad_token_id"] = "eos_token_id"
         
 class SnifferGeneralFamilyModel(SnifferBaseModel):
-    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None,loadSpecialTokenMap=None,optional_params={}):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc, tokenizer_class=transformers.AutoTokenizer, quantization_config=None,device_map=None,loadSpecialTokenMap=None,optional_params={}):
         super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
@@ -120,7 +120,7 @@ class SnifferGeneralFamilyModel(SnifferBaseModel):
         self.device_map = device_map
         
           # Load the tokenizer and model dynamically based on the provided model name, and use token if possible
-        self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name, **optional_params)
+        self.base_tokenizer = tokenizer_class.from_pretrained(self.model_name, **optional_params)
         
         if loadSpecialTokenMap is not None:
             mapper = loadSpecialTokenMap(self.base_tokenizer)
@@ -159,5 +159,6 @@ class GPTJSnifferModel(SnifferGeneralFamilyModel):
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
     hf_token = "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" # llama2 is gated access
     def __init__(self):
-        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, device_map="auto", loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc, optional_params={'token':LlamaSnifferModel.hf_token})  
+        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, tokenizer_class=LlamaTokenizer, device_map="auto",
+                         loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc, optional_params={'token':LlamaSnifferModel.hf_token})  
         
