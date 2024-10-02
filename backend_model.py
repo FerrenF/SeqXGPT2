@@ -104,7 +104,7 @@ class specialTokenMap:
 
 class specialLlamaTokenMap(specialTokenMap):
     def __init__(self, tokenizer) -> None:
-        super().__init__()
+        super().__init__(tokenizer)
         self.tokenizer = tokenizer
         self.tokenMap["pad_token_id"] = "eos_token_id"
         
