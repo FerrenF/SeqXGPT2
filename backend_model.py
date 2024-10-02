@@ -21,8 +21,6 @@ from transformers import LlamaForCausalLM, LlamaTokenizer
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 from transformers.models.gpt2.tokenization_gpt2 import bytes_to_unicode
 
-from backend_model_info import SeqXGPT2_ModelInfoContainer
-
 """
     Major changes: Rewrite all GPT family models into a single inheriting class with parameters specifying differences. Cut down a lot of code.
 """
@@ -111,7 +109,7 @@ class specialLlamaTokenMap(specialTokenMap):
         self.tokenMap["pad_token_id"] = "eos_token_id"
         
 class SnifferGeneralFamilyModel(SnifferBaseModel):
-    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None,loadSpecialTokenMap=None):
+    def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc,quantization_config=None,device_map=None,loadSpecialTokenMap=None,optional_params={}):
         super().__init__()  
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.do_generate = None
@@ -120,12 +118,7 @@ class SnifferGeneralFamilyModel(SnifferBaseModel):
         self.ppl_calculator_class = ppl_calculator_class
         self.quantization_config = quantization_config
         self.device_map = device_map
-        self.token = SeqXGPT2_ModelInfoContainer.hf_token
         
-        optional_params = {}
-        if self.token:
-            optional_params.update({"token": self.token})
-            
           # Load the tokenizer and model dynamically based on the provided model name, and use token if possible
         self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name, **optional_params)
         
@@ -164,6 +157,7 @@ class GPTJSnifferModel(SnifferGeneralFamilyModel):
         super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit, device_map="auto")  
         
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
+    hf_token = "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" # llama2 is gated access
     def __init__(self):
-        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, device_map="auto", loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc)  
+        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, device_map="auto", loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc, optional_params={'token':LlamaSnifferModel.hf_token})  
         
