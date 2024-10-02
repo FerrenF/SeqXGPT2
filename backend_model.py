@@ -21,6 +21,7 @@ from transformers import LlamaForCausalLM, LlamaTokenizer
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 from transformers.models.gpt2.tokenization_gpt2 import bytes_to_unicode
 
+from backend_model_info import SeqXGPT2_ModelInfoContainer
 
 """
     Major changes: Rewrite all GPT family models into a single inheriting class with parameters specifying differences. Cut down a lot of code.
@@ -119,17 +120,20 @@ class SnifferGeneralFamilyModel(SnifferBaseModel):
         self.ppl_calculator_class = ppl_calculator_class
         self.quantization_config = quantization_config
         self.device_map = device_map
-
-          # Load the tokenizer and model dynamically based on the provided model name
-        self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
+        self.token = SeqXGPT2_ModelInfoContainer.hf_token
+        
+        optional_params = {}
+        if self.token:
+            optional_params.update({"token": self.token})
+            
+          # Load the tokenizer and model dynamically based on the provided model name, and use token if possible
+        self.base_tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name, **optional_params)
         
         if loadSpecialTokenMap is not None:
             mapper = loadSpecialTokenMap(self.base_tokenizer)
             mapper.loadNewMap()
             
-        self.base_model = transformers.AutoModelForCausalLM.from_pretrained(
-            self.model_name, device_map=self.device_map, quantization_config=self.quantization_config
-        )
+        self.base_model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name, device_map=self.device_map, quantization_config=self.quantization_config, **optional_params)
         
         # Set padding token ID
         self.base_tokenizer.pad_token_id = self.base_tokenizer.eos_token_id

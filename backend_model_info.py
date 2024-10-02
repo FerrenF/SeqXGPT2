@@ -84,6 +84,8 @@ from backend_model import GPT2SnifferModel, GPTNeoSnifferModel, GPTJSnifferModel
 
 class SeqXGPT2_ModelInfoContainer:
     # All models that Sniffer will use.
+    
+    hf_token = "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"
     en_model_names = ['gpt_2', 'gpt_neo', 'gpt_J']
 
     # feature
