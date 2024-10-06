@@ -2,12 +2,8 @@ import random
 import httpx
 import msgpack
 import threading
-import time
-import os
 import argparse
 import json
-import scipy
-import numpy as np
 from sklearn.preprocessing import normalize
 from tqdm import tqdm
 

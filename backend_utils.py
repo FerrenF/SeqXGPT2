@@ -91,7 +91,6 @@ class tokenizerCommon:
                 2. Simultaneously look up the byte-pair encoding for each byte in the self.byte_encoder didtionary
                 3. Add encoded bytes to the bbs array with bbs.extend()
             """
-            #byte_list = [pplCalcBase.byte_encoder[b] for b in word.encode("utf-8")]
             byte_list = [pplCalcBase.byte_encoder[b] for b in word.encode("utf-8")]
             bbs.extend(byte_list)
             # Also, add the index of the word (idx) to the bbs_to_words array, and do it in the amount of len(byte_list) times to account for the number of bytes.

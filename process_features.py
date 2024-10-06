@@ -50,12 +50,6 @@ class SeqXFeatureProcessor:
         with open(input_file, 'r') as f:
             raw_features = [json.loads(line) for line in f.readlines()]
         
-        # json read
-        # with open(input_file, 'r') as f:
-        #     raw_features = json.load(f)
-
-        # raw_features = raw_features[:10]
-        # raw_features = json.load(open(input_file, 'r', encoding='utf-8'))
         print('input file:{}, length:{}'.format(input_file, len(raw_features)))
 
         with open(output_file, 'w', encoding='utf-8') as f:
@@ -69,7 +63,6 @@ class SeqXFeatureProcessor:
 
 
                 # losses, begin_idx_list, ll_tokens_list, label_int, label = raw_feature
-                #  python gen_features.py --process_features --input_file ../features/raw_features/en_alpaca_features.jsonl --output_file ../features/raw_processed_features/en_alpaca_processed_features.jsonl
                 try:
                     # ll_tokens_len_list = [len(ll_tokens) for ll_tokens in ll_tokens_list]
                     # if ll_tokens_len_list.count(ll_tokens_len_list[0]) != len(ll_tokens_len_list):
