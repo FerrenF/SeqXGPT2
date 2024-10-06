@@ -107,7 +107,7 @@ def parse_args():
     parser.add_argument("--input_file", type=str, help="input file")
     parser.add_argument("--output_file", type=str, help="output file")
 
-    parser.add_argument("--line_limit", default=0, action="store_true", help="Stop at number of lines from input file. Default: 0 (unlimited)")
+    parser.add_argument("--line_limit", type=int, default=0, help="Stop at number of lines from input file. Default: 0 (unlimited)")
     parser.add_argument("--get_en_features", action="store_true", help="DEPRECATED generate en logits and losses")
     parser.add_argument("--get_en_features_multithreading", action="store_true", help="multithreading generate en logits and losses")
     parser.add_argument("--do_normalize", action="store_true", help="normalize the features")
