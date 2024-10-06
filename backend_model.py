@@ -106,7 +106,7 @@ class specialLlamaTokenMap(specialTokenMap):
     def __init__(self, tokenizer) -> None:
         super().__init__(tokenizer)
         self.tokenizer = tokenizer
-        self.tokenMap["pad_token_id"] = "eos_token_id"
+        self.tokenMap["pad_token_id"] = "bos_token_id"
         
 class SnifferGeneralFamilyModel(SnifferBaseModel):
     def __init__(self, model_name="gpt2", ppl_calculator_class=BBPETokenizerPPLCalc, tokenizer_class=transformers.AutoTokenizer, quantization_config=None,device_map=None,loadSpecialTokenMap=None,optional_params={}):
@@ -144,6 +144,7 @@ class SnifferGeneralFamilyModel(SnifferBaseModel):
         return self.ppl_calculator.forward_calc_ppl(self.text)
 
 quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
+quant_config_4bit_bfloat = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)
 class GPT2SnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
         super().__init__(model_name="gpt2")  
@@ -159,6 +160,6 @@ class GPTJSnifferModel(SnifferGeneralFamilyModel):
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
     hf_token = "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" # llama2 is gated access
     def __init__(self):
-        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_8bit, tokenizer_class=LlamaTokenizer, device_map="auto",
+        super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_4bit_bfloat, tokenizer_class=LlamaTokenizer, device_map="auto",
                          loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc, optional_params={'token':LlamaSnifferModel.hf_token})  
         

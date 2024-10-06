@@ -12,3 +12,4 @@ datasets
 nltk
 sentencepiece
 protobuf
+msgpack
