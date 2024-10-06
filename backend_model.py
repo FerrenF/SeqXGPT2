@@ -155,7 +155,7 @@ class GPTNeoSnifferModel(SnifferGeneralFamilyModel):
         
 class GPTJSnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
-        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_8bit, device_map="auto")  
+        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=None, device_map="auto")  
         
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
     hf_token = "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" # llama2 is gated access
