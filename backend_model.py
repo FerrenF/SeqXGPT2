@@ -145,17 +145,18 @@ class SnifferGeneralFamilyModel(SnifferBaseModel):
 
 quant_config_8bit = BitsAndBytesConfig(load_in_8bit=True)
 quant_config_4bit_bfloat = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)
+quant_config_8bit_bfloat = BitsAndBytesConfig(load_in_8bit=True, bnb_4bit_compute_dtype=torch.bfloat16)
 class GPT2SnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
         super().__init__(model_name="gpt2")  
                 
 class GPTNeoSnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
-        super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit, device_map="auto")  
+        super().__init__(model_name="EleutherAI/gpt-neo-2.7B", quantization_config=quant_config_8bit_bfloat, device_map="auto")  
         
 class GPTJSnifferModel(SnifferGeneralFamilyModel):
     def __init__(self):
-        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=None, device_map="auto")  
+        super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_4bit_bfloat, device_map="auto")  
         
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
     hf_token = "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" # llama2 is gated access
