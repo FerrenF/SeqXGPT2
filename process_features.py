@@ -43,7 +43,7 @@ class SeqXFeatureProcessor:
             for raw_feature in tqdm(raw_features):
                 losses = raw_feature['losses']
                 begin_idx_list = raw_feature['begin_idx_list']
-                ll_tokens_list = raw_feature['ll_tokens_list'][0]
+                ll_tokens_list = raw_feature['ll_tokens_list']
     
                 label_int = raw_feature['label_int']
                 label = raw_feature['label']
@@ -62,9 +62,9 @@ class SeqXFeatureProcessor:
                     # Get the maximum value in begin_idx_list, which indicates where we need to truncate.
                     max_begin_idx = np.max(begin_idx_list)
                     # Truncate all vectors
-                    if len(ll_tokens_list) > 0 and max_begin_idx < len(ll_tokens_list[0]):
-                        for idx, ll_tokens in enumerate(ll_tokens_list):
-                            ll_tokens_list[idx] = ll_tokens[max_begin_idx:]
+                    
+                    for idx, ll_tokens in enumerate(ll_tokens_list):
+                        ll_tokens_list[idx] = ll_tokens[max_begin_idx:]
                             
                     # ll_tokens_list = ll_tokens_list[:, max_begin_idx:]
 
