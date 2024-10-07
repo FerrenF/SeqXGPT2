@@ -1,23 +1,10 @@
-import random
-import httpx
-import msgpack
-import threading
-import time
-import os
 import argparse
 import json
 import scipy
 import numpy as np
 from sklearn.preprocessing import normalize
 from tqdm import tqdm
-
-from config_manager import ConfigManager
-from backend_model_info import SeqXGPT2_ModelInfoContainer
-
-
-
-
-
+import itertools
 
 class SeqXFeatureProcessor:
 
@@ -57,6 +44,9 @@ class SeqXFeatureProcessor:
                 losses = raw_feature['losses']
                 begin_idx_list = raw_feature['begin_idx_list']
                 ll_tokens_list = raw_feature['ll_tokens_list']
+                
+                # un-nest ll_tokens_list (JURY RIGGED)
+                ll_tokens_list =  list(itertools.chain.from_iterable(ll_tokens_list))
                 label_int = raw_feature['label_int']
                 label = raw_feature['label']
                 text = raw_feature['text']
@@ -74,8 +64,10 @@ class SeqXFeatureProcessor:
                     # Get the maximum value in begin_idx_list, which indicates where we need to truncate.
                     max_begin_idx = np.max(begin_idx_list)
                     # Truncate all vectors
-                    for idx, ll_tokens in enumerate(ll_tokens_list):
-                        ll_tokens_list[idx] = ll_tokens[max_begin_idx:]
+                    if len(ll_tokens_list) > 0 and max_begin_idx < len(ll_tokens_list[0]):
+                        for idx, ll_tokens in enumerate(ll_tokens_list):
+                            ll_tokens_list[idx] = ll_tokens[max_begin_idx:]
+                            
                     # ll_tokens_list = ll_tokens_list[:, max_begin_idx:]
 
                     # Get the length of all vectors and take the minimum
@@ -83,6 +75,8 @@ class SeqXFeatureProcessor:
                     # Align the lengths of all vectors
                     for idx, ll_tokens in enumerate(ll_tokens_list):
                         ll_tokens_list[idx] = ll_tokens[:min_len]
+                        if len(ll_tokens)==0 or min_len == 0:
+                            print("problem aligning list for sample. min token list length is zero")
                     # ll_tokens_list = ll_tokens_list[:, :min_len]
 
                     if do_normalize:
