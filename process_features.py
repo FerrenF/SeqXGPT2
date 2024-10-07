@@ -43,10 +43,8 @@ class SeqXFeatureProcessor:
             for raw_feature in tqdm(raw_features):
                 losses = raw_feature['losses']
                 begin_idx_list = raw_feature['begin_idx_list']
-                ll_tokens_list = raw_feature['ll_tokens_list']
-                
-                # un-nest ll_tokens_list (JURY RIGGED)
-                ll_tokens_list =  list(itertools.chain.from_iterable(ll_tokens_list))
+                ll_tokens_list = raw_feature['ll_tokens_list'][0]
+    
                 label_int = raw_feature['label_int']
                 label = raw_feature['label']
                 text = raw_feature['text']
