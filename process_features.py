@@ -21,7 +21,7 @@ from backend_model_info import SeqXGPT2_ModelInfoContainer
 
 class SeqXFeatureProcessor:
 
-    @classmethod
+    @staticmethod
     def parse_args():
         parser = argparse.ArgumentParser()
         parser.add_argument("--input_file", type=str, help="input file")
