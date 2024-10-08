@@ -18,7 +18,7 @@ project_path = os.path.abspath('')
 if project_path not in sys.path:
     sys.path.append(project_path)
     
-import backend_model_info
+from backend_model_info import SeqXGPT2_ModelInfoContainer as mi
 from dataloader import DataManager
 
 # STEP 2
@@ -342,7 +342,7 @@ if __name__ == "__main__":
         print("Log INFO: split dataset...")
         split_dataset(data_path=args.data_path, train_path=args.train_path, test_path=args.test_path, train_ratio=args.train_ratio)
 
-    en_labels = backend_model_info.en_labels
+    en_labels = mi.en_labels
     id2label = construct_bmes_labels(en_labels)
     label2id = {v: k for k, v in id2label.items()}
 
@@ -381,7 +381,7 @@ if __name__ == "__main__":
     if args.train_mode == 'contrastive_learning':
         print('-' * 32 + 'contrastive_learning' + '-' * 32)
 
-        classifier = initialize_classifier(args.model, class_num=backend_model_info.en_class_num)
+        classifier = initialize_classifier(args.model, class_num=mi.en_class_num)
         ckpt_name = ''  # Set checkpoint name if needed
 
         trainer = SupervisedTrainer(data, classifier, loss_criterion='ContrastiveLoss')
@@ -391,7 +391,7 @@ if __name__ == "__main__":
     if args.train_mode == 'contrastive_classify':
         print('-' * 32 + 'contrastive_classify' + '-' * 32)
 
-        classifier = initialize_classifier(args.model, class_num=backend_model_info.en_class_num)
+        classifier = initialize_classifier(args.model, class_num=mi.en_class_num)
         ckpt_name = ''  # Set checkpoint name if needed
 
         load_checkpoint(classifier, ckpt_name)
