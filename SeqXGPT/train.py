@@ -27,12 +27,12 @@ from model import ModelWiseCNNClassifier, ModelWiseTransformerClassifier, Transf
 
 
 class SupervisedTrainer:
-    def __init__(self, data, model, en_labels, id2label, args):
+    def __init__(self, data, model, en_labels, id2label, args, ckpt_name=''):
         self.data = data
         self.model = model
         self.en_labels = en_labels
         self.id2label =id2label
-
+        self.ckpt_name = ckpt_name
         self.seq_len = args.seq_len
         self.num_train_epochs = args.num_train_epochs
         self.weight_decay = args.weight_decay
@@ -79,7 +79,7 @@ class SupervisedTrainer:
             self.optimizer,
             num_warmup_steps=self.warm_up_ratio * num_training_steps,
             num_training_steps=num_training_steps)
-
+        
     def train(self, ckpt_name='linear_en.pt'):
         for epoch in trange(int(self.num_train_epochs), desc="Epoch"):
             self.model.train()
@@ -114,11 +114,11 @@ class SupervisedTrainer:
             # test
             self.test()
             print('*' * 120)
-            torch.save(self.model.cpu(), ckpt_name)
+            torch.save(self.model.cpu(), self.ckpt_name)
             self.model.to(self.device)
 
-        torch.save(self.model.cpu(), ckpt_name)
-        saved_model = torch.load(ckpt_name)
+        torch.save(self.model.cpu(), self.ckpt_name)
+        saved_model = torch.load(self.ckpt_name)
         self.model.load_state_dict(saved_model.state_dict())
         return
 
@@ -335,6 +335,10 @@ def parse_args():
 # python ./Seq_train/train.py --gpu=0 --split_dataset
 # python ./Seq_train/train.py --gpu=0
 if __name__ == "__main__":
+
+    import nltk
+    nltk.download('punkt_tab')
+    
     args = parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
@@ -346,28 +350,31 @@ if __name__ == "__main__":
     id2label = construct_bmes_labels(en_labels)
     label2id = {v: k for k, v in id2label.items()}
 
+    print(id2label)
+    print(json.dumps(label2id))
+    
     data = DataManager(train_path=args.train_path, test_path=args.test_path, batch_size=args.batch_size, max_len=args.seq_len, human_label='human', id2label=id2label)
     
     def initialize_classifier(model_type, id2label=None, seq_len=None, class_num=None):
         if model_type == 'CNN':
-            return ModelWiseCNNClassifier(id2labels=id2label, class_num=class_num)
+            return ModelWiseCNNClassifier(id2labels=id2label)
         else:
-            return ModelWiseTransformerClassifier(id2labels=id2label, seq_len=seq_len, class_num=class_num)
+            return ModelWiseTransformerClassifier(id2labels=id2label, seq_len=seq_len)
 
     def load_checkpoint(classifier, ckpt_name):
         if ckpt_name:
             saved_model = torch.load(ckpt_name)
             classifier.load_state_dict(saved_model.state_dict())
-
+    
     """linear classify"""
     if args.train_mode == 'classify':
         print('-' * 32 + 'classify' + '-' * 32)
         print('-' * 32 + args.model + '-' * 32)
 
         classifier = initialize_classifier(args.model, id2label=id2label, seq_len=args.seq_len)
-        ckpt_name = ''  # Set checkpoint name if needed
+        ckpt_name = 'classify_checkpoint.pt'  # Set checkpoint name if needed
 
-        trainer = SupervisedTrainer(data, classifier, en_labels, id2label, args)
+        trainer = SupervisedTrainer(data, classifier, en_labels, id2label, args, ckpt_name=ckpt_name)
 
         if args.do_test:
             print("Log INFO: do test...")
@@ -382,9 +389,9 @@ if __name__ == "__main__":
         print('-' * 32 + 'contrastive_learning' + '-' * 32)
 
         classifier = initialize_classifier(args.model, class_num=mi.en_class_num)
-        ckpt_name = ''  # Set checkpoint name if needed
+        ckpt_name = 'contrastive_checkpoint.pt'  # Set checkpoint name if needed
 
-        trainer = SupervisedTrainer(data, classifier, loss_criterion='ContrastiveLoss')
+        trainer = SupervisedTrainer(data, classifier, loss_criterion='ContrastiveLoss', ckpt_name=ckpt_name)
         trainer.train(ckpt_name=ckpt_name)
 
     """classify after contrastive"""
@@ -392,10 +399,10 @@ if __name__ == "__main__":
         print('-' * 32 + 'contrastive_classify' + '-' * 32)
 
         classifier = initialize_classifier(args.model, class_num=mi.en_class_num)
-        ckpt_name = ''  # Set checkpoint name if needed
+        ckpt_name = 'cc_checkpoint.pt'  # Set checkpoint name if needed
 
         load_checkpoint(classifier, ckpt_name)
-        trainer = SupervisedTrainer(data, classifier, en_labels, id2label, args)
+        trainer = SupervisedTrainer(data, classifier, en_labels, id2label, args, ckpt_name=ckpt_name)
         trainer.train(ckpt_name=ckpt_name)
     
         # trainer = SupervisedTrainer(data, classifier, train_mode='Contrastive_Classifier')

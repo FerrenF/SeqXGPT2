@@ -70,6 +70,9 @@ class SeqXFeatureProcessor:
 
                     # Get the length of all vectors and take the minimum
                     min_len = np.min([len(ll_tokens) for ll_tokens in ll_tokens_list])
+
+                    if min_len < 25:
+                        print(f"min len {min_len} in {output_file}")
                     # Align the lengths of all vectors
                     for idx, ll_tokens in enumerate(ll_tokens_list):
                         ll_tokens_list[idx] = ll_tokens[:min_len]
