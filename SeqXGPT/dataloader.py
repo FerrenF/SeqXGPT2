@@ -38,7 +38,6 @@ class DataManager:
         data = dict()
 
         if train_path:
-            # {'features': [], 'prompt_len': [], 'label_int': [], 'text': []}
             train_dict = self.initialize_dataset(train_path)
             data["train"] = Dataset.from_dict(train_dict)
         
@@ -47,10 +46,11 @@ class DataManager:
             data["test"] = Dataset.from_dict(test_dict)
         
         datasets = DatasetDict(data)
+        
         if train_path:
-            self.train_dataloader = self.get_train_dataloader(datasets["train"])
+            self.train_dataloader = DataLoader(datasets["train"], batch_size=self.batch_size, sampler=RandomSampler(datasets["train"]), collate_fn=self.data_collator)
         if test_path:
-            self.test_dataloader = self.get_eval_dataloader(datasets["test"])
+            self.test_dataloader = DataLoader(datasets["test"], batch_size=self.batch_size, sampler=SequentialSampler(datasets["test"]), collate_fn=self.data_collator)
 
     def initialize_dataset(self, data_path, save_dir=''):
         processed_data_filename = Path(data_path).stem + "_processed.pkl"

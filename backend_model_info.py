@@ -102,9 +102,9 @@ class SeqXGPT2_ModelInfoContainer:
         'gptneo': 1,
         'gptj': 2,
         'llama': 3,
-        'human' : 5
+        'human' : 4
     }
-    en_class_num = 5
+    en_class_num = 5 # The number of labels
 
     base_model = "roberta-base"
 

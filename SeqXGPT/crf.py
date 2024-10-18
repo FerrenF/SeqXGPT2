@@ -134,7 +134,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
         self._word2idx = None
         self._idx2word = None
         self.rebuild = True
-        #  用于承载不需要单独创建entry的词语，具体见from_dataset()方法
+        #  Used to carry words that do not require separate entries. For details, see the from_dataset() method
         self._no_create_word = Counter()
 
     @property
@@ -178,18 +178,18 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @_check_build_status
     def add(self, word:str, no_create_entry:bool=False):
         r"""
-        增加一个新词在词典中的出现频率
+        Increase the frequency of a new word in the dictionary
 
-        :param word: 要添加进字典的新词， ``word`` 为一个字符串
-        :param no_create_entry: 如果词语来自于非训练集建议设置为 ``True`` 。
+        :param word: To add a new word to the dictionary, ``word`` type string
+        :param no_create_entry: If the word comes from a non-training set, the recommended setting is ``True`` 。
             
             * 如果为 ``True`` -- 则不会有这个词语创建一个单独的 entry ，它将一直被指向 ``<UNK>`` 的表示；
             * 如果为 ``False`` -- 为这个词创建一个单独的 entry。如果这个词来自于验证集或训练集，一般设置为 ``True`` ，如果来自于训练集一
               般设置为 ``False``；
               
-            有以下两种情况: 如果新加入一个 word ，且 ``no_create_entry`` 为 ``True``，但这个词之前已经在 Vocabulary 中且并不是 
-            ``no_create_entry`` 的，则还是会为这个词创建一个单独的 vector ; 如果 ``no_create_entry`` 为 ``False`` ，但这个词之
-            前已经在 Vocabulary 中且并不是 ``no_create_entry的`` ，则这个词将认为是需要创建单独的 vector 的。
+            There are two situations: If a new word ，and ``no_create_entry`` 为 ``True``, but the word has been used before in Vocabulary and not 
+            ``no_create_entry`` a seperate vector vector is created; if ``no_create_entry`` is ``False`` , if the word is already in
+            Vocabulary and not ``no_create_entry`` , then this word will be considered to need to create a separate vector
 
         """
         self._add_no_create_entry(word, no_create_entry)
@@ -198,7 +198,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     
     def _add_no_create_entry(self, word:Union[str, List[str]], no_create_entry:bool):
         r"""
-        在新加入word时，检查_no_create_word的设置。
+        When adding a new word, check the setting of _no_create_word.
 
         :param word: 要添加的新词或者是 :class:`List`类型的新词，如 word='I' 或者 word=['I', 'am', 'a', 'Chinese'] 均可
         :param no_create_entry: 如果词语来自于非训练集建议设置为 ``True`` 。
@@ -221,10 +221,10 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @_check_build_status
     def add_word(self, word:str, no_create_entry:bool=False):
         r"""
-        增加一个新词在词典中的出现频率
+        Increase the frequency of a new word in the dictionary
 
-        :param word: 要添加进字典的新词， ``word`` 为一个字符串
-        :param no_create_entry: 如果词语来自于非训练集建议设置为 ``True`` 。
+        :param word: The new word to be added to the dictionary, ``word`` is a string
+        :param no_create_entry: If the word comes from a non-training set, it is recommended to set it to ``True``.
             
             * 如果为 ``True`` -- 则不会有这个词语创建一个单独的 entry ，它将一直被指向 ``<UNK>`` 的表示；
             * 如果为 ``False`` -- 为这个词创建一个单独的 entry。如果这个词来自于验证集或训练集，一般设置为 ``True`` ，如果来自于训练集一
@@ -240,18 +240,12 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @_check_build_status
     def add_word_lst(self, word_lst: List[str], no_create_entry:bool=False):
         r"""
-        依次增加序列中词在词典中的出现频率
+        Add the frequency of words in the sequence in the sequence in the dictionary
+        
+        :param word_lst: the list sequence of the new word that needs to be added, such as word_LST = ['i', 'am', 'a', 'Chinese 
+        :param no_create_entry: If the word comes from the non -training collection, True. If the word comes from the validation set or training set, it is generally set to ``True``, and if it comes from the training set, it is generally set to ``False``;
 
-        :param word_lst: 需要添加的新词的 list 序列，如 word_lst=['I', 'am', 'a', 'Chinese'] 。
-        :param no_create_entry: 如果词语来自于非训练集建议设置为 ``True`` 。
-            
-            * 如果为 ``True`` -- 则不会有这个词语创建一个单独的 entry ，它将一直被指向 ``<UNK>`` 的表示；
-            * 如果为 ``False`` -- 为这个词创建一个单独的 entry。如果这个词来自于验证集或训练集，一般设置为 ``True`` ，如果来自于训练集一
-              般设置为 ``False``；
-              
-            有以下两种情况: 如果新加入一个 word ，且 ``no_create_entry`` 为 ``True``，但这个词之前已经在 Vocabulary 中且并不是 
-            ``no_create_entry`` 的，则还是会为这个词创建一个单独的 vector ; 如果 ``no_create_entry`` 为 ``False`` ，但这个词之
-            前已经在 Vocabulary 中且并不是 ``no_create_entry的`` ，则这个词将认为是需要创建单独的 vector 的。
+        There are two cases: If a new word is added and ``no_create_entry`` is ``True``, but the word has been in the Vocabulary before and is not ``no_create_entry``, a separate vector will still be created for the word; If ``no_create_entry`` is ``False``, but the word has been in the Vocabulary before and is not ``no_create_entry``, the word will be considered to need to create a separate vector.
 
         """
         self.update(word_lst, no_create_entry=no_create_entry)
@@ -259,8 +253,8 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     
     def build_vocab(self):
         r"""
-        根据已经出现的词和出现频率构建词典。注意：重复构建可能会改变词典的大小，
-        但已经记录在词典中的词，不会改变对应的 :class:`int`
+        Build a dictionary based on the words that have appeared and their frequency. 
+        Note: Repeated construction may change the size of the dictionary, but the words that have been recorded in the dictionary will not change the corresponding :class:`int`
         """
         if self._word2idx is None:
             self._word2idx = {}
@@ -283,7 +277,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     
     def build_reverse_vocab(self):
         r"""
-        基于 `word to index` dict, 构建 `index to word` dict.
+        Based on the `word to index` dict, construct an `index to word` dict.
 
         """
         self._idx2word = {i: w for w, i in self._word2idx.items()}
@@ -296,7 +290,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @_check_build_vocab
     def __contains__(self, item:str):
         r"""
-        检查词是否被记录
+        Check if the word is recorded
 
         :param item: the word
         :return: True or False
@@ -305,13 +299,13 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     
     def has_word(self, w:str):
         r"""
-        检查词是否被记录::
+        Check if the word is recorded::
 
             has_abc = vocab.has_word('abc')
             # equals to
             has_abc = 'abc' in vocab
 
-        :param item: 输入的str类型的词
+        :param item: Input word of type str
         :return: ``True`` or ``False``
         """
         return self.__contains__(w)
@@ -319,7 +313,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @_check_build_vocab
     def __getitem__(self, w):
         r"""
-        支持从字典中直接得到词语的index，例如::
+        Supports getting the index of words directly from the dictionary, for example::
 
             vocab[w]
         """
@@ -346,7 +340,7 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     
     def to_index(self, w:str):
         r"""
-        将词转为数字。 若词不在词典中被记录, 将视为 `unknown`, 若 ``unknown=None`` , 将抛出 ``ValueError`` ::
+        Convert words to numbers. If the word is not recorded in the dictionary, it will be regarded as `unknown`, if ``unknown=None`` , will throw ``ValueError`` ::
 
             index = vocab.to_index('abc')
             # equals to
@@ -466,10 +460,10 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
     @staticmethod
     def load(filepath: Union[str,io.StringIO]):
         r"""
-        从文件路径中加载数据
+        Load data from file path
 
-        :param filepath: 词表的读取路径
-        :return: 读取的 :class:`Vocabulary`
+        :param filepath: path to read vocabulary
+        :return: read :class:`Vocabulary`
         """
         if isinstance(filepath, io.IOBase):
             assert filepath.writable()
@@ -537,9 +531,9 @@ If set to ``None``, `unknown` is not considered in the vocabulary and is not cou
 
 def _check_tag_vocab_and_encoding_type(tag_vocab: Union[Vocabulary, dict], encoding_type: str):
     r"""
-    检查vocab中的tag是否与encoding_type是匹配的
+    Check if the tag in vocab matches the encoding_type
 
-    :param tag_vocab: 支持传入tag Vocabulary; 或者传入形如{0:"O", 1:"B-tag1"}，即index在前，tag在后的dict。
+    :param tag_vocab: supports passing in tag Vocabulary; or passing in a dict in the form of {0:"O", 1:"B-tag1"}, i.e. index first and tag last.
     :param encoding_type: bio, bmes, bioes, bmeso
     :return:
     """
@@ -568,9 +562,10 @@ def _check_tag_vocab_and_encoding_type(tag_vocab: Union[Vocabulary, dict], encod
 
 def _get_encoding_type_from_tag_vocab(tag_vocab: Union[Vocabulary, dict]) -> str:
     r"""
-    给定 Vocabular y自动判断是哪种类型的 encoding, 支持判断 bmes, bioes, bmeso, bio
-
-    :param tag_vocab: 支持传入 tag Vocabulary; 或者传入形如 {0:"O", 1:"B-tag1"}，即 index 在前，tag 在后的 dict。
+    
+    Given a Vocabulary y, automatically determine the encoding type, supporting bmes, bioes, bmeso, bio
+    :param tag_vocab: supports passing in tag Vocabulary; or passing in a dict in the form of {0:"O", 1:"B-tag1"}, i.e. index first, tag second.
+    
     :return:
     """
     tag_set = set()
@@ -657,7 +652,7 @@ def _is_transition_allowed(encoding_type, from_tag, from_label, to_tag, to_label
     encoding_type = encoding_type.lower()
     if encoding_type == 'bio':
         r"""
-        第一行是to_tag, 第一列是from_tag. y任意条件下可转，-只有在label相同时可转，n不可转
+        The first row is to_tag, the first column is from_tag. y can be converted under any conditions, - can only be converted when the labels are the same, n cannot be converted
         +-------+---+---+---+-------+-----+
         |       | B | I | O | start | end |
         +-------+---+---+---+-------+-----+
@@ -683,7 +678,7 @@ def _is_transition_allowed(encoding_type, from_tag, from_label, to_tag, to_label
 
     elif encoding_type == 'bmes':
         r"""
-        第一行是to_tag, 第一列是from_tag，y任意条件下可转，-只有在label相同时可转，n不可转
+        The first row is to_tag, the first column is from_tag, y can be converted under any conditions, - can only be converted when the labels are the same, n cannot be converted
         +-------+---+---+---+---+-------+-----+
         |       | B | M | E | S | start | end |
         +-------+---+---+---+---+-------+-----+
@@ -738,12 +733,19 @@ def _is_transition_allowed(encoding_type, from_tag, from_label, to_tag, to_label
 
 class ConditionalRandomField(nn.Module):
     r"""
-    条件随机场。提供 :meth:`forward` 以及 :meth:`viterbi_decode` 两个方法，分别用于 **训练** 与 **inference** 。
+    Conditional random fields. 
+    
+    Provides two methods: 
+    
+    :meth:`forward` and 
+    :meth:`viterbi_decode`, for **training** and **inference** respectively.
 
-    :param num_tags: 标签的数量
-    :param include_start_end_trans: 是否考虑各个 tag 作为开始以及结尾的分数。
-    :param allowed_transitions: 内部的 ``Tuple[from_tag_id(int), to_tag_id(int)]`` 视为允许发生的跃迁，其他没
-        有包含的跃迁认为是禁止跃迁，可以通过 :func:`allowed_transitions` 函数得到；如果为 ``None`` ，则所有跃迁均为合法。
+    :param num_tags: the number of tags
+    :param include_start_end_trans: whether to consider each tag as the start and end score.
+    :param allowed_transitions: the internal ``Tuple[from_tag_id(int), to_tag_id(int)]`` is considered as allowed transitions, 
+    and other transitions not included are considered forbidden transitions, which can be obtained through the :func:`allowed_transitions` 
+    function; if it is ``None``, all transitions are legal.
+    
     """
 
     def __init__(self, num_tags:int, include_start_end_trans:bool=False, allowed_transitions:List=None):
@@ -834,11 +836,10 @@ class ConditionalRandomField(nn.Module):
 
     def forward(self, feats: "torch.FloatTensor", tags: "torch.LongTensor", mask: "torch.ByteTensor") -> "torch.FloatTensor":
         r"""
-        用于计算 ``CRF`` 的前向 loss，返回值为一个形状为 ``[batch_size,]`` 的 :class:`torch.FloatTensor` ，可能需要 :func:`mean` 求得 loss 。
-
-        :param feats: 特征矩阵，形状为 ``[batch_size, max_len, num_tags]``
-        :param tags: 标签矩阵，形状为 ``[batch_size, max_len]``
-        :param mask: 形状为 ``[batch_size, max_len]`` ，为 **0** 的位置认为是 padding。
+        Used to calculate the forward loss of ``CRF``. The return value is a :class:`torch.FloatTensor` of shape ``[batch_size,]``. You may need :func:`mean` to find the loss.
+            :param feats: feature matrix, shape is ``[batch_size, max_len, num_tags]``
+            :param tags: tag matrix, shape is ``[batch_size, max_len]``
+            :param mask: shape is ``[batch_size, max_len]``. Positions with **0** are considered padding.
         :return: ``[batch_size,]``
         """
         feats = feats.transpose(0, 1)
@@ -850,19 +851,22 @@ class ConditionalRandomField(nn.Module):
         return all_path_score - gold_path_score
 
     def viterbi_decode(self, logits: "torch.FloatTensor", mask: "torch.ByteTensor", unpad=False):
-        r"""给定一个 **特征矩阵** 以及 **转移分数矩阵** ，计算出最佳的路径以及对应的分数
+        r"""
+        
+        Given a **feature matrix** and a **transition score matrix**, calculate the best path and the corresponding score
 
-        :param logits: 特征矩阵，形状为 ``[batch_size, max_len, num_tags]``
-        :param mask: 标签矩阵，形状为 ``[batch_size, max_len]`` ，为 **0** 的位置认为是 padding。如果为 ``None`` ，则认为没有 padding。
-        :param unpad: 是否将结果删去 padding：
+        :param logits: feature matrix, shape is ``[batch_size, max_len, num_tags]``
+        :param mask: label matrix, shape is ``[batch_size, max_len]``, **0** positions are considered padding. If it is ``None``, it is considered that there is no padding.
+        :param unpad: whether to delete padding from the result:
 
-                - 为 ``False`` 时，返回的是 ``[batch_size, max_len]`` 的张量
-                - 为 ``True`` 时，返回的是 :class:`List` [:class:`List` [ :class:`int` ]], 内部的 :class:`List` [:class:`int` ] 为每个 
-                  sequence 的 label ，已经除去 pad 部分，即每个 :class:`List` [ :class:`int` ] 的长度是这个 sample 的有效长度。
-        :return:  (paths, scores)。
+        - When it is ``False``, the returned value is a tensor of ``[batch_size, max_len]``
+        - When it is ``True``, the returned value is :class:`List` [:class:`List` [ :class:`int` ]], the internal :class:`List` [:class:`int` ] is the label of each
+        sequence, and the pad part has been removed, that is, each The length of :class:`List` [ :class:`int` ] is the effective length of this sample.
+        :return: (paths, scores).
 
-                - ``paths`` -- 解码后的路径, 其值参照 ``unpad`` 参数.
-                - ``scores`` -- :class:`torch.FloatTensor` ，形状为 ``[batch_size,]`` ，对应每个最优路径的分数。
+        - ``paths`` -- decoded paths, whose values ​​refer to the ``unpad`` parameter.
+
+        - ``scores`` -- :class:`torch.FloatTensor`, with shape ``[batch_size,]``, corresponding to the score of each optimal path.
 
         """
         batch_size, max_len, n_tags = logits.size()
@@ -885,19 +889,19 @@ class ConditionalRandomField(nn.Module):
         trans_score = transitions[:n_tags, :n_tags].view(1, n_tags, n_tags).data
         end_trans_score = transitions[:n_tags, n_tags+1].view(1, 1, n_tags).repeat(batch_size, 1, 1) # bsz, 1, n_tags
 
-        # 针对长度为1的句子
+        # For sentences of length 1
         vscore += transitions[:n_tags, n_tags+1].view(1, n_tags).repeat(batch_size, 1) \
             .masked_fill(seq_len.ne(1).view(-1, 1), 0)
         for i in range(1, max_len):
             prev_score = vscore.view(batch_size, n_tags, 1)
             cur_score = logits[i].view(batch_size, 1, n_tags) + trans_score
             score = prev_score + cur_score.masked_fill(flip_mask[i].view(batch_size, 1, 1), 0)  # bsz x n_tag x n_tag
-            # 需要考虑当前位置是该序列的最后一个
+            # It is necessary to consider that the current position is the last one in the sequence
             score += end_trans_score.masked_fill(seq_len.ne(i+1).view(-1, 1, 1), 0)
 
             best_score, best_dst = score.max(1)
             vpath[i] = best_dst
-            # 由于最终是通过last_tags回溯，需要保持每个位置的vscore情况
+            # Since the final step is to backtrack through last_tags, it is necessary to keep the vscore status of each position
             vscore = best_score.masked_fill(flip_mask[i].view(batch_size, 1), 0) + \
                      vscore.masked_fill(mask[i].view(batch_size, 1), 0)
 
