@@ -159,7 +159,7 @@ class GPTJSnifferModel(SnifferGeneralFamilyModel):
         super().__init__(model_name="EleutherAI/gpt-j-6B",quantization_config=quant_config_4bit_bfloat, device_map="auto")  
         
 class LlamaSnifferModel(SnifferGeneralFamilyModel):
-    hf_token = "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" # llama2 is gated access
+    hf_token = "" # llama2 is gated access, you will need a huggingface api key created on an account that has been approved to use llama
     def __init__(self):
         super().__init__(model_name="meta-llama/Llama-2-7b-hf",quantization_config=quant_config_4bit_bfloat, tokenizer_class=LlamaTokenizer, device_map="auto",
                          loadSpecialTokenMap=specialLlamaTokenMap, ppl_calculator_class=SPLlamaTokenizerPPLCalc, optional_params={'token':LlamaSnifferModel.hf_token})  
